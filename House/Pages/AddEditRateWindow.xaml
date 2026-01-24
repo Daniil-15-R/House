@@ -1,0 +1,40 @@
+﻿<Window x:Class="House.Pages.AddEditRateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:House.Pages"
+        mc:Ignorable="d"
+        Title="AddEditRateWindow" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Название -->
+        <TextBlock Grid.Row="0" Text="Название тарифа:" Margin="0,5"/>
+        <TextBox Grid.Row="1" x:Name="tbTitle" Margin="0,0,0,10"/>
+
+        <!-- Цена -->
+        <TextBlock Grid.Row="2" Text="Цена (руб.):" Margin="0,5"/>
+        <TextBox Grid.Row="3" x:Name="tbPrice" Margin="0,0,0,20"/>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnSave" Content="Сохранить" 
+                    Click="btnSave_Click" 
+                    Background="{StaticResource AttentBrush}"
+                    Foreground="White"
+                    Padding="15,5" 
+                    Margin="0,0,10,0"/>
+            <Button x:Name="btnCancel" Content="Отмена" 
+                    Click="btnCancel_Click"
+                    Padding="15,5"/>
+        </StackPanel>
+    </Grid>
+</Window>

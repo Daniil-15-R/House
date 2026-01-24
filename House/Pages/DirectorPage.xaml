@@ -1,0 +1,384 @@
+﻿<Page x:Class="House.Pages.DirectorPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:House.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="DirectorPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <Border Grid.Row="0" Background="{StaticResource Sec_BackBrush}" Padding="10">
+            <TextBlock Text="Панель руководителя" 
+                      Foreground="White" 
+                      FontSize="24" 
+                      FontWeight="Bold" 
+                      HorizontalAlignment="Center"/>
+        </Border>
+
+        <!-- Основной контент -->
+        <TabControl Grid.Row="1" Margin="10">
+            <!-- Финансовые показатели -->
+            <TabItem Header="Финансовые показатели">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Расчет рентабельности -->
+                        <GroupBox Grid.Row="0" Header="Расчет рентабельности" Margin="0,0,0,10">
+                            <Grid Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Левая часть - входные данные -->
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Прибыль от использования ресурсов:" Margin="0,5"/>
+                                    <TextBox x:Name="tbProfit" Text="0" Margin="0,0,0,10" Height="25"/>
+
+                                    <TextBlock Text="Суммарные затраты на ресурсы:" Margin="0,5"/>
+                                    <TextBox x:Name="tbCosts" Text="0" Margin="0,0,0,10" Height="25"/>
+
+                                    <Button x:Name="btnCalculate" 
+                                            Content="Рассчитать рентабельность" 
+                                            Click="btnCalculate_Click"
+                                            Background="{StaticResource AttentBrush}" 
+                                            Foreground="White"
+                                            Height="30" 
+                                            Margin="0,10,0,0"/>
+                                </StackPanel>
+
+                                <!-- Правая часть - результаты -->
+                                <Border Grid.Column="2" Background="White" Padding="10" CornerRadius="5">
+                                    <StackPanel>
+                                        <TextBlock Text="Результаты расчета:" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Прибыль:" Margin="0,0,10,5"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" x:Name="tbResultProfit" Text="0 руб." FontWeight="Bold"/>
+
+                                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Затраты:" Margin="0,0,10,5"/>
+                                            <TextBlock Grid.Row="1" Grid.Column="1" x:Name="tbResultCosts" Text="0 руб." FontWeight="Bold"/>
+
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Рентабельность:" Margin="0,0,10,5"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" x:Name="tbResultROI" Text="0%" 
+                                                      FontWeight="Bold" 
+                                                      Foreground="#FF2E5D8F"/>
+                                        </Grid>
+
+                                        <TextBlock x:Name="tbROIComment" 
+                                                  Margin="0,10,0,0" 
+                                                  TextWrapping="Wrap"
+                                                  FontStyle="Italic"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </GroupBox>
+
+                        <!-- Отчеты по платежам -->
+                        <GroupBox Grid.Row="1" Header="Отчеты по платежам" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Фильтры -->
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                                    <TextBlock Text="Период:" VerticalAlignment="Center" Margin="5,0"/>
+                                    <TextBox x:Name="tbPeriodFilter" Width="100" Margin="5,0"/>
+                                    <Button x:Name="btnLoadPaymentReports" 
+                                            Content="Загрузить отчеты" 
+                                            Click="btnLoadPaymentReports_Click"
+                                            Margin="20,0,0,0" 
+                                            Padding="10,5"/>
+                                </StackPanel>
+
+                                <!-- Таблица отчетов -->
+                                <DataGrid Grid.Row="1" 
+                                         x:Name="dgPaymentReports" 
+                                         AutoGenerateColumns="False"
+                                         CanUserAddRows="False">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Владелец" Binding="{Binding Owner1.Owner1}"/>
+                                        <DataGridTextColumn Header="Адрес" Binding="{Binding List_of_housing_stock.Address}"/>
+                                        <DataGridTextColumn Header="Квартира" Binding="{Binding Flat}"/>
+                                        <DataGridTextColumn Header="Период" Binding="{Binding Period}"/>
+                                        <DataGridTextColumn Header="Начислено" Binding="{Binding Accrued, StringFormat={}{0} руб.}"/>
+                                        <DataGridTextColumn Header="Оплачено" Binding="{Binding Paid_for, StringFormat={}{0} руб.}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </GroupBox>
+
+                        <!-- Долги -->
+                        <GroupBox Grid.Row="2" Header="Список долгов" Margin="0,0,0,10">
+                            <DataGrid x:Name="dgDebts" 
+                                     AutoGenerateColumns="False"
+                                     CanUserAddRows="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Адрес" Binding="{Binding List_of_housing_stock.Address}"/>
+                                    <DataGridTextColumn Header="Квартира" Binding="{Binding Flat}"/>
+                                    <DataGridTextColumn Header="Владелец" Binding="{Binding Owner1.Owner1}"/>
+                                    <DataGridTextColumn Header="Телефон" Binding="{Binding Telephone}"/>
+                                    <DataGridTextColumn Header="Вода" Binding="{Binding Water, StringFormat={}{0} руб.}"/>
+                                    <DataGridTextColumn Header="Электричество" Binding="{Binding Electricpower, StringFormat={}{0} руб.}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </GroupBox>
+
+                        <!-- Статистика -->
+                        <GroupBox Grid.Row="3" Header="Финансовая статистика">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" 
+                                       Background="{StaticResource Sec_BackBrush}" 
+                                       Margin="5" 
+                                       CornerRadius="5" 
+                                       Padding="10">
+                                    <StackPanel>
+                                        <TextBlock Text="Общие начисления" 
+                                                  Foreground="White" 
+                                                  FontSize="16"
+                                                  HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="tbTotalAccrued" 
+                                                  Text="0 руб." 
+                                                  Foreground="White" 
+                                                  FontSize="24"
+                                                  FontWeight="Bold"
+                                                  HorizontalAlignment="Center"
+                                                  Margin="0,10,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="1" 
+                                       Background="{StaticResource AttentBrush}" 
+                                       Margin="5" 
+                                       CornerRadius="5" 
+                                       Padding="10">
+                                    <StackPanel>
+                                        <TextBlock Text="Общие оплаты" 
+                                                  Foreground="White" 
+                                                  FontSize="16"
+                                                  HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="tbTotalPaid" 
+                                                  Text="0 руб." 
+                                                  Foreground="White" 
+                                                  FontSize="24"
+                                                  FontWeight="Bold"
+                                                  HorizontalAlignment="Center"
+                                                  Margin="0,10,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" 
+                                       Background="#FFE53935" 
+                                       Margin="5" 
+                                       CornerRadius="5" 
+                                       Padding="10">
+                                    <StackPanel>
+                                        <TextBlock Text="Общие долги" 
+                                                  Foreground="White" 
+                                                  FontSize="16"
+                                                  HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="tbTotalDebts" 
+                                                  Text="0 руб." 
+                                                  Foreground="White" 
+                                                  FontSize="24"
+                                                  FontWeight="Bold"
+                                                  HorizontalAlignment="Center"
+                                                  Margin="0,10,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Управление персоналом">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <ComboBox x:Name="cbRoleFilter" 
+                                 Width="150" 
+                                 Margin="5,0"
+                                 DisplayMemberPath="Role"/>
+                        <Button x:Name="btnLoadUsers" 
+                                Content="Загрузить сотрудников" 
+                                Click="btnLoadUsers_Click"
+                                Margin="20,0" 
+                                Padding="10,5"/>
+                        <Button x:Name="btnAddUser" 
+                                Content="Добавить сотрудника" 
+                                Click="btnAddUser_Click"
+                                Background="{StaticResource AttentBrush}" 
+                                Foreground="White"
+                                Padding="10,5"/>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" 
+                             x:Name="dgUsers" 
+                             AutoGenerateColumns="False"
+                             CanUserAddRows="False"
+                             SelectionChanged="dgUsers_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Логин" Binding="{Binding Login}"/>
+                            <DataGridTextColumn Header="Роль" Binding="{Binding Roles.Role}"/>
+                            <DataGridTemplateColumn Header="Действия" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="✏" 
+                                                    Tag="{Binding Id}"
+                                                    Click="btnEditUser_Click"
+                                                    Margin="2" 
+                                                    Width="30"
+                                                    Background="#FF4CAF50"
+                                                    Foreground="White"/>
+                                            <Button Content="Удалить" 
+                                                    Tag="{Binding Id}"
+                                                    Click="btnDeleteUser_Click"
+                                                    Margin="2" 
+                                                    Width="30"
+                                                    Background="#FFE53935"
+                                                    Foreground="White"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Мониторинг задач">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <ComboBox x:Name="cbStatusFilter" 
+                                 Width="150" 
+                                 Margin="5,0"
+                                 DisplayMemberPath="Status1"/>
+                        <DatePicker x:Name="dpDateFilter" 
+                                   Width="150" 
+                                   Margin="5,0"/>
+                        <Button x:Name="btnLoadJobs" 
+                                Content="Загрузить задачи" 
+                                Click="btnLoadJobs_Click"
+                                Margin="20,0" 
+                                Padding="10,5"/>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" 
+                             x:Name="dgJobs" 
+                             AutoGenerateColumns="False"
+                             CanUserAddRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                            <DataGridTextColumn Header="Дата" Binding="{Binding Date, StringFormat=dd.MM.yyyy}"/>
+                            <DataGridTextColumn Header="Статус" Binding="{Binding StatusReportJob.Title}"/>
+                            <DataGridTextColumn Header="Стоимость" Binding="{Binding Price, StringFormat={}{0} руб.}"/>
+                            <DataGridTextColumn Header="Заявка" Binding="{Binding Applications.Id}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Управление тарифами">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button x:Name="btnLoadRates" 
+                                Content="Загрузить тарифы" 
+                                Click="btnLoadRates_Click"
+                                Margin="0,0,10,0" 
+                                Padding="10,5"/>
+                        <Button x:Name="btnAddRate" 
+                                Content="Добавить тариф" 
+                                Click="btnAddRate_Click"
+                                Background ="{StaticResource AttentBrush}" 
+                                Foreground="White"
+                                Padding="10,5"/>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" 
+                             x:Name="dgRates" 
+                             AutoGenerateColumns="False"
+                             CanUserAddRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding id}" Width="50"/>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Title}"/>
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat={}{0} руб.}"/>
+                            <DataGridTemplateColumn Header="Действия" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Редактирвоание" 
+                                                    Tag="{Binding id}"
+                                                    Click="btnEditRate_Click"
+                                                    Margin="2" 
+                                                    Width="30"
+                                                    Background="#FF4CAF50"
+                                                    Foreground="White"/>
+                                            <Button Content="Удалить" 
+                                                    Tag="{Binding id}"
+                                                    Click="btnDeleteRate_Click"
+                                                    Margin="2" 
+                                                    Width="30"
+                                                    Background="#FFE53935"
+                                                    Foreground="White"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

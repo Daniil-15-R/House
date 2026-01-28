@@ -29,7 +29,6 @@ namespace House.Pages
                     .Include("List_of_housing_stock")
                     .Include("Status1")
                     .Include("Users")
-                    .Include("Users1")
                     .FirstOrDefault(a => a.Id == _applicationId);
 
                 if (_application == null)

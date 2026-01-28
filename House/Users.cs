@@ -17,7 +17,6 @@ namespace House
         public Users()
         {
             this.Applications = new HashSet<Applications>();
-            this.Applications1 = new HashSet<Applications>();
             this.Service = new HashSet<Service>();
         }
     
@@ -28,7 +27,6 @@ namespace House
         public int Role { get; set; }
     
         public virtual ICollection<Applications> Applications { get; set; }
-        public virtual ICollection<Applications> Applications1 { get; set; }
         public virtual Roles Roles { get; set; }
         public virtual ICollection<Service> Service { get; set; }
     }

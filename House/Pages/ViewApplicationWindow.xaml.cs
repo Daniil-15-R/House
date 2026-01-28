@@ -59,17 +59,10 @@ namespace House.Pages
 
                 CreatedDateText.Text = "Не указана";
 
-                if (_application.Telephone != null && _application.Telephone.Length > 0)
+
+                if (!string.IsNullOrEmpty(_application.Telephone))
                 {
-                    try
-                    {
-                        string phone = Encoding.UTF8.GetString(_application.Telephone);
-                        PhoneText.Text = FormatPhoneNumber(phone);
-                    }
-                    catch
-                    {
-                        PhoneText.Text = "Ошибка чтения телефона";
-                    }
+                    PhoneText.Text = FormatPhoneNumber(_application.Telephone);
                 }
                 else
                 {

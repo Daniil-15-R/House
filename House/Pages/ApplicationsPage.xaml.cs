@@ -88,8 +88,7 @@ namespace House.Pages
                 IQueryable<Applications> query = _context.Applications
                     .Include("List_of_housing_stock")
                     .Include("Status1")
-                    .Include("Users")
-                    .Include("Users1");
+                    .Include("Users");
 
                 // Применяем фильтр по адресу только если пользователь не собственник
                 if (!_isOwner && AddressFilterComboBox.SelectedItem is List_of_housing_stock selectedAddress

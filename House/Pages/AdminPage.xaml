@@ -32,6 +32,7 @@
                 <Separator Width="1" Margin="20,5"/>
                 <Button x:Name="HousingStockButton" Content="Жилищный фонд" Style="{StaticResource NavButton}" Click="HousingStockButton_Click"/>
                 <Separator Width="1" Margin="20,5"/>
+                <Button x:Name="EmployeeStockButton" Content="Список сотруднников" Style="{StaticResource NavButton}" Click="EmployeeStockButton_Click"/>
             </StackPanel>
         </Border>
         <Frame x:Name="MainFrame"

@@ -89,8 +89,7 @@ namespace House.Pages
                     IQueryable<Applications> query = _context.Applications
                         .Include("List_of_housing_stock")
                         .Include("Status1")
-                        .Include("Users")  // Создатель заявки
-                        .Include("Users1") // Исполнитель заявки
+                        .Include("Users") 
                         .Where(a => a.Status == closedStatus.Id);
 
                     // Применяем фильтр по адресу
@@ -106,7 +105,7 @@ namespace House.Pages
                     {
                         // Фильтруем по полю Executor, если оно существует
                         // Или по связи Users1 (исполнитель)
-                        query = query.Where(a => a.Users1 != null && a.Users1.Id == selectedEmployee.Id);
+                        query = query.Where(a => a.Users != null && a.Users.Id == selectedEmployee.Id);
                     }
 
                     var readyApplications = query

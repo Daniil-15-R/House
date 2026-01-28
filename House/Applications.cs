@@ -23,15 +23,15 @@ namespace House
         public int Id { get; set; }
         public int Address { get; set; }
         public string Owner { get; set; }
-        public byte[] Telephone { get; set; }
+        public string Telephone { get; set; }
         public string Descrition { get; set; }
-        public int Employer { get; set; }
-        public int Status { get; set; }
+        public Nullable<int> Employer { get; set; }
+        public Nullable<int> Status { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
     
         public virtual List_of_housing_stock List_of_housing_stock { get; set; }
         public virtual Status Status1 { get; set; }
         public virtual Users Users { get; set; }
-        public virtual Users Users1 { get; set; }
         public virtual ICollection<ReportOfJob> ReportOfJob { get; set; }
         public virtual ICollection<Service> Service { get; set; }
     }

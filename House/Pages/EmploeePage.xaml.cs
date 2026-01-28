@@ -22,11 +22,37 @@ namespace House.Pages
         private List<Users> _employees;
         private List<Applications> _allApplications;
         private List<Service> _allServices;
+        private string _currentUserRole;
+        private int _currentUserId;
 
         public EmploeePage()
         {
             InitializeComponent();
+            GetCurrentUserInfo();
             LoadData();
+        }
+
+        private void GetCurrentUserInfo()
+        {
+            try
+            {
+                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                if (mainWindow != null)
+                {
+                    _currentUserRole = mainWindow.GetCurrentUserRole();
+                    _currentUserId = mainWindow.GetCurrentUserId();
+                }
+                else
+                {
+                    _currentUserRole = "Работник";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка получения информации о пользователе: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                _currentUserRole = "Работник";
+            }
         }
 
         private void LoadData()
@@ -35,26 +61,43 @@ namespace House.Pages
             {
                 _context = new Entities();
 
-                // Загружаем сотрудников
                 _employees = _context.Users
                     .Include(u => u.Roles)
-                    .Where(u => u.Roles.Role == "Работники" || u.Role == 2)
+                    .Where(u => u.Roles.Role == "Работник" || u.Role == 4)
                     .ToList();
 
-                // Загружаем ВСЕ заявки с ВСЕМИ связанными данными
+                lvEmployees.ItemsSource = _employees;
+
                 _allApplications = _context.Applications
-                    .Include(a => a.List_of_housing_stock)     // Адрес
-                    .Include(a => a.Status1)                   // Статус
-                    .Include(a => a.Users)                     // Создатель
-                    .Include(a => a.Users1)                    // Исполнитель
+                    .Include(a => a.List_of_housing_stock)
+                    .Include(a => a.Status1)
+                    .Include(a => a.Users)
                     .ToList();
 
                 _allServices = _context.Service.ToList();
-                lvEmployees.ItemsSource = _employees;
 
-                if (_employees.Any())
+                if (_currentUserRole.ToLower() == "администратор")
                 {
-                    lvEmployees.SelectedIndex = 0;
+                    lvEmployees.Visibility = Visibility.Visible;
+                    lblSelectEmployee.Visibility = Visibility.Visible;
+                    tbSelectedEmployee.Visibility = Visibility.Visible;
+
+                    if (_employees.Any())
+                    {
+                        lvEmployees.SelectedIndex = 0;
+                    }
+                }
+                else
+                {
+                    lvEmployees.Visibility = Visibility.Collapsed;
+                    lblSelectEmployee.Visibility = Visibility.Collapsed;
+                    tbSelectedEmployee.Visibility = Visibility.Collapsed;
+
+                    var currentEmployee = _employees.FirstOrDefault(e => e.Id == _currentUserId);
+                    if (currentEmployee != null)
+                    {
+                        ShowEmployeeApplications(currentEmployee);
+                    }
                 }
             }
             catch (Exception ex)
@@ -66,56 +109,86 @@ namespace House.Pages
 
         private void lvEmployees_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (_currentUserRole.ToLower() != "администратор")
+                return;
+
             if (lvEmployees.SelectedItem is Users selectedEmployee)
             {
-                tbSelectedEmployee.Text = $"{selectedEmployee.Name} (ID: {selectedEmployee.Id})";
+                ShowEmployeeApplications(selectedEmployee);
+            }
+            else
+            {
+                ClearEmployeeInfo();
+            }
+        }
 
-                // ВАРИАНТ 1: Заявки, где сотрудник - исполнитель (Employer)
-                var employeeApplications = _allApplications
-                    .Where(a => a.Employer == selectedEmployee.Id)
-                    .ToList();
+        private void ShowEmployeeApplications(Users employee)
+        {
+            try
+            {
+                tbSelectedEmployee.Text = $"{employee.Name} (ID: {employee.Id})";
 
-                // ВАРИАНТ 2: Если нужно показывать заявки, созданные сотрудником
-                // var employeeApplications = _allApplications
-                //     .Where(a => a.Users != null && a.Users.Id == selectedEmployee.Id)
-                //     .ToList();
+                List<Applications> employeeApplications;
+
+                if (_currentUserRole.ToLower() == "администратор")
+                {
+                    // Администратор видит все заявки выбранного сотрудника
+                    employeeApplications = _allApplications
+                        .Where(a => a.Employer == employee.Id)
+                        .ToList();
+                }
+                else
+                {
+                    // Обычный сотрудник видит только свои заявки
+                    employeeApplications = _allApplications
+                        .Where(a => a.Employer == _currentUserId)
+                        .ToList();
+                }
 
                 dgApplications.ItemsSource = employeeApplications;
 
                 // Статистика
                 tbTotalApplications.Text = employeeApplications.Count.ToString();
 
-                var servicesCount = _allServices.Count(s => s.Employeer == selectedEmployee.Id);
+                var servicesCount = _allServices.Count(s => s.Employeer == employee.Id);
                 tbServicesCount.Text = servicesCount.ToString();
 
-                // Дополнительная информация о статусах
                 ShowApplicationsStatistics(employeeApplications);
             }
-            else
+            catch (Exception ex)
             {
-                tbSelectedEmployee.Text = "Не выбран";
-                dgApplications.ItemsSource = null;
-                tbTotalApplications.Text = "0";
-                tbServicesCount.Text = "0";
+                MessageBox.Show($"Ошибка отображения заявок: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void ClearEmployeeInfo()
+        {
+            tbSelectedEmployee.Text = "Не выбран";
+            dgApplications.ItemsSource = null;
+            tbTotalApplications.Text = "0";
+            tbServicesCount.Text = "0";
         }
 
         private void ShowApplicationsStatistics(List<Applications> applications)
         {
             if (applications == null || !applications.Any()) return;
 
-            // Пример: можно добавить текстовый блок для отображения статистики по статусам
             var statusGroups = applications
                 .GroupBy(a => a.Status1?.Status1 ?? "Неизвестно")
                 .Select(g => new { Status = g.Key, Count = g.Count() })
                 .ToList();
 
-            // Можно вывести в отладочную консоль или добавить новый элемент UI
             Console.WriteLine($"Статистика по заявкам:");
             foreach (var group in statusGroups)
             {
                 Console.WriteLine($"{group.Status}: {group.Count}");
             }
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadData();
         }
     }
 }

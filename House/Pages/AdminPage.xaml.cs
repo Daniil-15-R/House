@@ -39,5 +39,10 @@ namespace House.Pages
         {
             MainFrame.Navigate(new HouseStockPage());
         }
+
+        private void EmployeeStockButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new EmploeePage());
+        }
     }
 }

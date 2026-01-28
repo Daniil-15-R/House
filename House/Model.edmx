@@ -12,10 +12,11 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Address" Type="int" Nullable="false" />
           <Property Name="Owner" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Telephone" Type="varbinary" MaxLength="50" Nullable="false" />
+          <Property Name="Telephone" Type="nvarchar(max)" />
           <Property Name="Descrition" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Employer" Type="int" Nullable="false" />
-          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="Employer" Type="int" />
+          <Property Name="Status" Type="int" />
+          <Property Name="Date" Type="date" />
         </EntityType>
         <EntityType Name="HistoryJob">
           <Key>
@@ -149,7 +150,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Applications_Status">
-          <End Role="Status" Type="Self.Status" Multiplicity="1" />
+          <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
           <End Role="Applications" Type="Self.Applications" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Status">
@@ -161,19 +162,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Applications_Users">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="Applications" Type="Self.Applications" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Applications">
-              <PropertyRef Name="Employer" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Applications_Users1">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Applications" Type="Self.Applications" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
@@ -331,10 +320,6 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Applications" EntitySet="Applications" />
           </AssociationSet>
-          <AssociationSet Name="FK_Applications_Users1" Association="Self.FK_Applications_Users1">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Applications" EntitySet="Applications" />
-          </AssociationSet>
           <AssociationSet Name="FK_HistoryJob_ReportOfJob" Association="Self.FK_HistoryJob_ReportOfJob">
             <End Role="ReportOfJob" EntitySet="ReportOfJob" />
             <End Role="HistoryJob" EntitySet="HistoryJob" />
@@ -388,14 +373,14 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Address" Type="Int32" Nullable="false" />
           <Property Name="Owner" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Telephone" Type="Binary" MaxLength="50" FixedLength="false" Nullable="false" />
+          <Property Name="Telephone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Descrition" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Employer" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Employer" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
           <NavigationProperty Name="List_of_housing_stock" Relationship="Self.FK_Applications_List_of_housing_stock" FromRole="Applications" ToRole="List_of_housing_stock" />
           <NavigationProperty Name="Status1" Relationship="Self.FK_Applications_Status" FromRole="Applications" ToRole="Status" />
           <NavigationProperty Name="Users" Relationship="Self.FK_Applications_Users" FromRole="Applications" ToRole="Users" />
-          <NavigationProperty Name="Users1" Relationship="Self.FK_Applications_Users1" FromRole="Applications" ToRole="Users" />
           <NavigationProperty Name="ReportOfJob" Relationship="Self.FK_ReportOfJob_Applications" FromRole="Applications" ToRole="ReportOfJob" />
           <NavigationProperty Name="Service" Relationship="Self.FK_Service_Applications" FromRole="Applications" ToRole="Service" />
         </EntityType>
@@ -536,7 +521,6 @@
           <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Role" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Applications" Relationship="Self.FK_Applications_Users" FromRole="Users" ToRole="Applications" />
-          <NavigationProperty Name="Applications1" Relationship="Self.FK_Applications_Users1" FromRole="Users" ToRole="Applications" />
           <NavigationProperty Name="Roles" Relationship="Self.FK_Users_Roles" FromRole="Users" ToRole="Roles" />
           <NavigationProperty Name="Service" Relationship="Self.FK_Service_Users" FromRole="Users" ToRole="Service" />
         </EntityType>
@@ -553,7 +537,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Applications_Status">
-          <End Role="Status" Type="Self.Status" Multiplicity="1" />
+          <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
           <End Role="Applications" Type="Self.Applications" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Status">
@@ -565,19 +549,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Applications_Users">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="Applications" Type="Self.Applications" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Applications">
-              <PropertyRef Name="Employer" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Applications_Users1">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Applications" Type="Self.Applications" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
@@ -735,10 +707,6 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Applications" EntitySet="Applications" />
           </AssociationSet>
-          <AssociationSet Name="FK_Applications_Users1" Association="Self.FK_Applications_Users1">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Applications" EntitySet="Applications" />
-          </AssociationSet>
           <AssociationSet Name="FK_ReportOfJob_Applications" Association="Self.FK_ReportOfJob_Applications">
             <End Role="Applications" EntitySet="Applications" />
             <End Role="ReportOfJob" EntitySet="ReportOfJob" />
@@ -796,6 +764,7 @@
                 <ScalarProperty Name="Descrition" ColumnName="Descrition" />
                 <ScalarProperty Name="Employer" ColumnName="Employer" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

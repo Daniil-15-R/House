@@ -167,9 +167,6 @@ namespace House.Pages
                     if (_isOwner)
                     {
                         Console.WriteLine($"Для пользователя '{_currentUserName}' заявок не найдено");
-                        // Можно добавить информационное сообщение для пользователя
-                        // MessageBox.Show($"У вас еще нет заявок. Нажмите 'Добавить заявку' для создания первой заявки.", 
-                        //    "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {

@@ -21,16 +21,25 @@ namespace House.Pages
     public partial class ClientPage : Page
     {
         private int _userId;
+        private string _userName; // Добавляем поле для имени
 
         public ClientPage(int userId)
         {
             InitializeComponent();
             _userId = userId;
+
+            // Получаем имя пользователя из MainWindow
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            if (mainWindow != null)
+            {
+                _userName = mainWindow.GetCurrentUserName();
+            }
         }
 
         private void ApplicationsButton_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new ApplicationsPage(_userId));
+            // Передаем и userId, и userName в ApplicationsPage
+            MainFrame.Navigate(new ApplicationsPage(_userId, _userName));
         }
     }
 }

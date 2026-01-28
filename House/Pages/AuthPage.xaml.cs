@@ -47,6 +47,7 @@ namespace House.Pages
                         {
                             mainWindow.SetUserRole(userRole);
                             mainWindow.SetUserId(user.Id);
+                            mainWindow.SetUserName(user.Name); // Добавляем сохранение имени
                         }
 
                         MessageBox.Show($"Добро пожаловать, {user.Name}!\nРоль: {userRole}",

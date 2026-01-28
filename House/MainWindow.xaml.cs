@@ -23,6 +23,7 @@ namespace House
     {
         private string _currentUserRole = "";
         private int _currentUserId = 0;
+        private string _currentUserName = "";
         public MainWindow()
         {
             InitializeComponent();
@@ -64,6 +65,15 @@ namespace House
         public string GetCurrentUserRole()
         {
             return _currentUserRole;
+        }
+        public void SetUserName(string userName)
+        {
+            _currentUserName = userName;
+        }
+
+        public string GetCurrentUserName()
+        {
+            return _currentUserName;
         }
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
